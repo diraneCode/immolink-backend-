@@ -29,7 +29,7 @@ module.exports = (sequelize) => {
             allowNull: false
         },
         photo: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false
         },
         proprietaire: {
@@ -38,7 +38,7 @@ module.exports = (sequelize) => {
         },
         staut: {
             type: DataTypes.BOOLEAN,
-            allowNull: false
+            allowNull: true
         }
     })
 }
