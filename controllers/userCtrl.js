@@ -53,7 +53,7 @@ const updateUser = async(req, res) => {
         if(!user) return res.status().json({msg: "Utilisateur non trouver"});
         try{
             user.nom = body.nom;
-            const userUpdate = await user.save();
+            await user.save();
             res.status(201).json({msg: "Utilisateur modifier"})
         }catch(err){
             res.status(500).json(err);
