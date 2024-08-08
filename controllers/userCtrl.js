@@ -1,6 +1,7 @@
-const User = require("../models/userModel")
+const {db} = require("../databases/db")
 const userValidation = require("../validators/userValidator")
 
+const User = db.User
 
 const createUser = async (req, res) => {
     const { body } = req
@@ -8,11 +9,13 @@ const createUser = async (req, res) => {
     const { error } = userValidation(body)
     if(error) return res.status(401).json(error.details[0].message);
     try {
-        const user = await User.create({...body})
+        await User.create({...body})
         res.status(201).json({msg: "Utilisateur creer"})
     } catch (error) {
         res.status(500).json(error);
     }
+    console.log(User);
+    
 }
 
 const getAllUser = async (req, res) => {
