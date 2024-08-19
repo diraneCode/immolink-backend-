@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const { db } = require("../databases/db");
 const roomValidation = require("../validators/roomValidator");
 
@@ -50,13 +51,15 @@ const getOneRoom = async (req, res) => {
 
 const updateRoom = async (req, res) => {
     const { id } = req.params;
-    const { body } = req;
-
     try{
         const room = await Room.findByPk(id);
         if(!room) return res.status(404).json({msg: "Aucune chambre trouver"});
         try{
-            room.type = body.type
+            if(room.status == 'disponible'){
+                room.status = 'indisponible'
+            }else{
+                room.status = 'disponible'
+            }
             await room.save();
             res.status(201).json({msg: "Chambre modifier"}); 
         }catch(errror){
@@ -74,7 +77,7 @@ const deleteRoom = async (req, res) => {
         const room = await Room.findByPk(id);
         if(!room) return res.status(404).json({msg: "Aucune chambre trouver"});
         try{
-            Room.destroy(id);
+            Room.destroy({ where: {id: id }});
             res.status(200).json({msg: "Chambre supprimer"});
         }catch(error){
             res.status(500).json(error)

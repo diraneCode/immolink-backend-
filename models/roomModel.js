@@ -36,8 +36,8 @@ module.exports = (sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        staut: {
-            type: DataTypes.BOOLEAN,
+        status: {
+            type: DataTypes.STRING,
             allowNull: true
         }
     })

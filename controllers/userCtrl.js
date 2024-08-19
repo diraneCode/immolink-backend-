@@ -1,5 +1,6 @@
 const {db} = require("../databases/db")
 const userValidation = require("../validators/userValidator")
+const jwt = require('jsonwebtoken')
 
 const User = db.User
 
@@ -42,6 +43,54 @@ const getOneUser = async (req, res) => {
         res.status(500).json(error);
     }
 
+}
+
+const singupUser = async (req, res) => {
+    const { body } = req;
+    const { error } = userValidation(body);
+    if(error) return res.status(401).json(error.details[0].message)
+    try{
+        const user = await User.create({...body});
+        const token = jwt.sign(
+            {
+                id: user.id,
+                nom: user.nom,
+                email: user.email,
+                telephone: user.telephone,
+                status: user.status
+            },
+            process.env.TOKEN_KEY
+        )
+        user.token = token
+        return res.status(201).json({ msg: user })
+    }catch(error){
+        res.status(500).json(error)
+    }
+}
+
+const loginUser = async (req, res) => {
+    const { email, password } = req.body;
+    try{
+        const user = await User.findOne({ where: {email: email}});
+        if(!user) return res.status(404).json({msg: "Aucun user trouver"});
+        if(user.password === password){
+            const token = jwt.sign(
+                {
+                    id: user.id,
+                    nom: user.nom,
+                    email: user.email,
+                    telephone: user.telephone
+                },
+                process.env.TOKEN_KEY
+            )
+            user.token
+            res.status(200).json({msg: user});
+        }else{
+            res.status(200).json({msg: "Non authentifier"});            
+        }
+    }catch(error){
+        res.status(500).json(error);
+    }
 }
 
 const updateUser = async(req, res) => {
@@ -87,5 +136,7 @@ module.exports = {
     getOneUser,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    loginUser,
+    singupUser
 }

@@ -6,7 +6,8 @@ const userValidation = (body) => {
             nom: Joi.string().trim().required(),
             email: Joi.string().trim().required(),
             telephone: Joi.string().trim().required(),
-            password: Joi.string().trim().required()
+            password: Joi.string().trim().required(),
+            status: Joi.string().trim()
         }
     )
 
